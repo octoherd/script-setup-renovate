@@ -7,8 +7,7 @@ At this point, this script adds / updates a repository's `package.json` file. Re
 ## Usage
 
 ```
-git clone https://github.com/octoherd/script-setup-renovate.git
-$ npx @octoherd/cli \
+$ npx @octoherd/script-close-renovate-dashboard-issues \
   --octoherd-token 0123456789012345678901234567890123456789 \
   script-setup-renovate/script.js \
   "octokit/*" \
