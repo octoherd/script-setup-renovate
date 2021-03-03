@@ -1,8 +1,8 @@
 /**
  * Setup renovate by adding `{"renovate": {"extends": "..."}}` to the package.json
  *
- * @param {import('@octoherd/octokit').Octokit} octokit
- * @param {import('@octokit/openapi-types').components["schemas"]["repository"]} repository
+ * @param {import('@octoherd/cli').Octokit} octokit
+ * @param {import('@octoherd/cli').Repository} repository
  * @param { {extends: string} } options Custom user options passed to the CLI
  */
 export async function script(octokit, repository, options) {
