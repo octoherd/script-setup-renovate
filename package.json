@@ -23,5 +23,6 @@
   },
   "bin": {
     "octoherd-script-setup-renovate": "./cli.js"
-  }
+  },
+  "repository": "github:octoherd/script-setup-renovate"
 }
