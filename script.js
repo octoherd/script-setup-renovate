@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * Setup renovate by adding `{"renovate": {"extends": "..."}}` to the package.json
  *
