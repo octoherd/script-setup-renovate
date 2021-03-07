@@ -22,6 +22,7 @@ export async function script(octokit, repository, options) {
     return;
   }
 
+  // @ts-expect-error expects { sha } to be present when status 404 (see #6)
   const { pkg, sha } = await octokit
     .request("GET /repos/{owner}/{repo}/contents/{path}", {
       owner,
@@ -51,8 +52,7 @@ export async function script(octokit, repository, options) {
         }
       },
       (error) => {
-        // @ts-expect-error expects { sha} to be present (see #6)
-        if (error.status === 404) return { pkg: false, sha: undefined };
+        if (error.status === 404) return { pkg: false };
         throw error;
       }
     );
