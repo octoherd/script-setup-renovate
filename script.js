@@ -38,7 +38,7 @@ export async function script(octokit, repository, options) {
         };
       },
       (error) => {
-        if (error.status === 404) return { pkg: false, sha: "" };
+        if (error.status === 404) return { pkg: false, sha: undefined };
         throw error;
       }
     );
