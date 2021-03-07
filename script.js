@@ -94,7 +94,7 @@ export async function script(octokit, repository, options) {
     repo,
     path,
     sha,
-    //@ts-expect-error
+    // @ts-expect-error
     content: Buffer.from(JSON.stringify(pkg, null, 2) + "\n").toString(
       "base64"
     ),
