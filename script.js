@@ -51,7 +51,7 @@ export async function script(octokit, repository, options) {
         }
       },
       (error) => {
-        // return { sha } to make TypeScript check happy
+        // @ts-expect-error expects { sha} to be present (see #6)
         if (error.status === 404) return { pkg: false, sha: undefined };
         throw error;
       }
