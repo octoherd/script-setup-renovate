@@ -30,12 +30,25 @@ export async function script(octokit, repository, options) {
     })
     .then(
       (response) => {
-        return {
-          pkg: JSON.parse(
-            Buffer.from(response.data.content, "base64").toString()
-          ),
-          sha: response.data.sha,
-        };
+        //https://github.com/github/rest-api-description/issues/165
+        if (Array.isArray(response.data) || response.data.type !== "file") {
+          throw new Error("package.json should be a file not a dir");
+        }
+
+        if (response.data.type === "file") {
+          return {
+            pkg: JSON.parse(
+              //@ts-expect-error
+              //https://github.com/github/rest-api-description/issues/165
+              Buffer.from(response.data.content, "base64").toString()
+            ),
+            sha: response.data.sha,
+          };
+        } else {
+          throw new Error(
+            `package.json should be a file not a ${response.data.type}`
+          );
+        }
       },
       (error) => {
         if (error.status === 404) return { pkg: false };
