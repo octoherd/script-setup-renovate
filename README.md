@@ -7,11 +7,10 @@ At this point, this script adds / updates a repository's `package.json` file. Re
 ## Usage
 
 ```
-$ npx @octoherd/script-setup-renovate \
-  --octoherd-token 0123456789012345678901234567890123456789 \
-  script-setup-renovate/script.js \
-  "octokit/*" \
-  --extends "github>octokit/.github"
+npx @octoherd/script-setup-renovate \
+  --octoherd-token $GITHUB_TOKEN \
+  "octoherd/*" \
+  --extends "github>octoherd/.github"
 ```
 
 ## Licenses
