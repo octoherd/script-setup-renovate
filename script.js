@@ -10,6 +10,10 @@ export async function script(octokit, repository, options) {
     throw new Error(`--extends is required`);
   }
 
+  if (!repository.owner) {
+    throw new Error(`repository must have an 'owner' associated`);
+  }
+
   const owner = repository.owner.login;
   const repo = repository.name;
   const path = "package.json";
