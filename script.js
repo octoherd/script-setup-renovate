@@ -7,11 +7,11 @@
  */
 export async function script(octokit, repository, options) {
   if (!options.extends) {
-    throw new Error(`--extends is required`);
+    throw new Error("--extends is required");
   }
 
   if (!repository.owner) {
-    throw new Error(`repository must have an 'owner' associated`);
+    throw new Error("repository must have an 'owner' associated");
   }
 
   const owner = repository.owner.login;
@@ -102,7 +102,7 @@ export async function script(octokit, repository, options) {
     content: Buffer.from(JSON.stringify(pkg, null, 2) + "\n").toString(
       "base64"
     ),
-    message: `build: renovate setup`,
+    message: "build: renovate setup",
   });
 
   if (currentExtends) {
