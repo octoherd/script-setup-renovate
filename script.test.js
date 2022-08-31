@@ -68,7 +68,103 @@ test("adds 'renovate' entry to package.json if it did not exist", async () => {
   });
 });
 
-test("adds 'extends' entry to 'renovate' entry if it did not exist", async () => {
+test("adds 'renovate' entry ONLY to package.json files", async () => {
+  const path = "renovate.json";
+
+  const originalPackageJson = {
+    name: "octoherd-cli",
+    version: "0.0.0",
+    description: "",
+    main: "index.js",
+    scripts: {
+      test: 'echo "Error: no test specified" && exit 1',
+    },
+    author: "",
+    license: "ISC",
+  };
+
+  nock("https://api.github.com")
+    .get(`/repos/${repository.owner.login}/${repository.name}/contents/${path}`)
+    .reply(200, {
+      type: "file",
+      sha: "randomSha",
+      content: Buffer.from(JSON.stringify(originalPackageJson)).toString(
+        "base64"
+      ),
+    })
+    .put(
+      `/repos/${repository.owner.login}/${repository.name}/contents/${path}`,
+      (body) => {
+        const pkg = JSON.parse(Buffer.from(body.content, "base64").toString());
+
+        equal(pkg, {
+          ...originalPackageJson,
+          extends: ["github>octoherd/.github"],
+        });
+
+        return true;
+      }
+    )
+    .reply(200, { commit: { html_url: "link to commit" } });
+
+  await script(getOctokitForTests(), repository, {
+    extends: "github>octoherd/.github",
+    path,
+  });
+});
+
+test("'path' option recognizes paths containing package.json as package.json files", async () => {
+  const path = "my/random/path/package.json";
+
+  const originalPackageJson = {
+    name: "octoherd-cli",
+    version: "0.0.0",
+    description: "",
+    main: "index.js",
+    scripts: {
+      test: 'echo "Error: no test specified" && exit 1',
+    },
+    author: "",
+    license: "ISC",
+  };
+
+  nock("https://api.github.com")
+    .get(
+      `/repos/${repository.owner.login}/${
+        repository.name
+      }/contents/${encodeURIComponent(path)}`
+    )
+    .reply(200, {
+      type: "file",
+      sha: "randomSha",
+      content: Buffer.from(JSON.stringify(originalPackageJson)).toString(
+        "base64"
+      ),
+    })
+    .put(
+      `/repos/${repository.owner.login}/${
+        repository.name
+      }/contents/${encodeURIComponent(path)}`,
+      (body) => {
+        const pkg = JSON.parse(Buffer.from(body.content, "base64").toString());
+
+        equal(pkg, {
+          ...originalPackageJson,
+          renovate: { extends: ["github>octoherd/.github"] },
+        });
+
+        return true;
+      }
+    )
+    .reply(200, { commit: { html_url: "link to commit" } });
+
+  await script(getOctokitForTests(), repository, {
+    extends: "github>octoherd/.github",
+    path,
+  });
+});
+
+test("adds 'extends' entry if it did not exist", async () => {
   const originalPackageJson = {
     name: "octoherd-cli",
     version: "0.0.0",
@@ -113,7 +209,7 @@ test("adds 'extends' entry to 'renovate' entry if it did not exist", async () =>
   });
 });
 
-test("replaces 'extends' entry if renovate.extends already existed", async () => {
+test("replaces 'extends' entry if extends already existed", async () => {
   const originalPackageJson = {
     name: "octoherd-cli",
     version: "0.0.0",
@@ -217,7 +313,7 @@ test("throws if --extends option is NOT provided", async () => {
   equal(nock.pendingMocks().length, 0);
 });
 
-test("throws if package.json is NOT a file", async () => {
+test("throws if JSON file provided is NOT a file", async () => {
   nock("https://api.github.com")
     .get(
       `/repos/${repository.owner.login}/${repository.name}/contents/package.json`
@@ -240,7 +336,7 @@ test("throws if package.json is NOT a file", async () => {
   }
 });
 
-test("throws if server fails when retrieving package.json", async () => {
+test("throws if server fails when retrieving the JSON file", async () => {
   nock("https://api.github.com")
     .get(
       `/repos/${repository.owner.login}/${repository.name}/contents/package.json`
@@ -287,7 +383,26 @@ test("returns if repository is archived", async () => {
   equal(nock.pendingMocks().length, 0);
 });
 
-test("creates package.json if file does NOT exist in the repository", async () => {
+test("creates JSON file if file does NOT exist in the repository", async () => {
+  const path = "renovate.json";
+
+  nock("https://api.github.com")
+    .get(`/repos/${repository.owner.login}/${repository.name}/contents/${path}`)
+    .reply(404)
+    .put(`/repos/${repository.owner.login}/${repository.name}/contents/${path}`)
+    .reply(201, { commit: { html_url: "link to commit" } });
+
+  try {
+    await script(getOctokitForTests(), repository, {
+      extends: "github>octoherd/.github",
+      path,
+    });
+  } catch (error) {
+    unreachable("should have NOT thrown");
+  }
+});
+
+test("creates package.json file if file no 'path' option is provided", async () => {
   nock("https://api.github.com")
     .get(
       `/repos/${repository.owner.login}/${repository.name}/contents/package.json`
