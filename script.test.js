@@ -287,12 +287,16 @@ test("returns if repository is archived", async () => {
   equal(nock.pendingMocks().length, 0);
 });
 
-test("returns if no package.json file exists in the repository", async () => {
+test("creates package.json if file does NOT exist in the repository", async () => {
   nock("https://api.github.com")
     .get(
       `/repos/${repository.owner.login}/${repository.name}/contents/package.json`
     )
-    .reply(404);
+    .reply(404)
+    .put(
+      `/repos/${repository.owner.login}/${repository.name}/contents/package.json`
+    )
+    .reply(201, { commit: { html_url: "link to commit" } });
 
   try {
     await script(getOctokitForTests(), repository, {

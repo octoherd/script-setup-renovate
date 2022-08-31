@@ -38,16 +38,13 @@ export async function script(octokit, repository, options) {
     repo,
     path,
     content: ({ exists, content }) => {
+      let pkg;
+
       if (!exists) {
-        octokit.log.info(
-          { owner, repo, updated: false },
-          `no package.json file in ${repository.html_url}`
-        );
-
-        return null;
+        pkg = {};
+      } else {
+        pkg = JSON.parse(content);
       }
-
-      const pkg = JSON.parse(content);
 
       if (!pkg.renovate) {
         pkg.renovate = {};
