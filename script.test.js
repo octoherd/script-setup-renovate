@@ -68,6 +68,61 @@ test("adds 'renovate' entry to package.json if it did not exist", async () => {
   });
 });
 
+test("preserves spacing for JSON files", async () => {
+  const path = "renovate.json";
+
+  const originalPackageJson = {
+    name: "octoherd-cli",
+    version: "0.0.0",
+    description: "",
+    main: "index.js",
+    scripts: {
+      test: 'echo "Error: no test specified" && exit 1',
+    },
+    author: "",
+    license: "ISC",
+  };
+
+  nock("https://api.github.com")
+    .get(`/repos/${repository.owner.login}/${repository.name}/contents/${path}`)
+    .reply(200, {
+      type: "file",
+      sha: "randomSha",
+      content: Buffer.from(JSON.stringify(originalPackageJson)).toString(
+        "base64"
+      ),
+    })
+    .put(
+      `/repos/${repository.owner.login}/${repository.name}/contents/${path}`,
+      (body) => {
+        equal(
+          Buffer.from(body.content, "base64").toString(),
+          "{\n" +
+            '\t"name": "octoherd-cli",\n' +
+            '\t"version": "0.0.0",\n' +
+            '\t"description": "",\n' +
+            '\t"main": "index.js",\n' +
+            '\t"scripts": {\n' +
+            '\t\t"test": "echo \\"Error: no test specified\\" && exit 1"\n' +
+            "\t},\n" +
+            '\t"author": "",\n' +
+            '\t"license": "ISC",\n' +
+            '\t"extends": [\n' +
+            '\t\t"github>octoherd/.github"\n' +
+            "\t]\n" +
+            "}"
+        );
+
+        return true;
+      }
+    )
+    .reply(200, { commit: { html_url: "link to commit" } });
+
+  await script(getOctokitForTests(), repository, {
+    extends: "github>octoherd/.github",
+    path,
+  });
+});
 test("adds 'renovate' entry ONLY to package.json files", async () => {
   const path = "renovate.json";
 
