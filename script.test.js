@@ -98,19 +98,19 @@ test("preserves spacing for JSON files", async () => {
         equal(
           Buffer.from(body.content, "base64").toString(),
           "{\n" +
-            '\t"name": "octoherd-cli",\n' +
-            '\t"version": "0.0.0",\n' +
-            '\t"description": "",\n' +
-            '\t"main": "index.js",\n' +
-            '\t"scripts": {\n' +
-            '\t\t"test": "echo \\"Error: no test specified\\" && exit 1"\n' +
-            "\t},\n" +
-            '\t"author": "",\n' +
-            '\t"license": "ISC",\n' +
-            '\t"extends": [\n' +
-            '\t\t"github>octoherd/.github"\n' +
-            "\t]\n" +
-            "}"
+            '  "name": "octoherd-cli",\n' +
+            '  "version": "0.0.0",\n' +
+            '  "description": "",\n' +
+            '  "main": "index.js",\n' +
+            '  "scripts": {\n' +
+            '    "test": "echo \\"Error: no test specified\\" && exit 1"\n' +
+            "  },\n" +
+            '  "author": "",\n' +
+            '  "license": "ISC",\n' +
+            '  "extends": [\n' +
+            '    "github>octoherd/.github"\n' +
+            "  ]\n" +
+            "}\n"
         );
 
         return true;
