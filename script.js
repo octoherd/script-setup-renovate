@@ -67,7 +67,7 @@ export async function script(octokit, repository, options) {
 
       renovateConfigObj.extends = newExtends;
 
-      return JSON.stringify(jsonFile, null, "\t");
+      return JSON.stringify(jsonFile, null, "  ") + "\n";
     },
     message: "build: renovate setup",
   });
