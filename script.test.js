@@ -43,6 +43,7 @@ test("adds 'renovate' entry to package.json if it did not exist", async () => {
     )
     .reply(200, {
       type: "file",
+      sha: "randomSha",
       content: Buffer.from(JSON.stringify(originalPackageJson)).toString(
         "base64"
       ),
@@ -87,6 +88,7 @@ test("adds 'extends' entry to 'renovate' entry if it did not exist", async () =>
     )
     .reply(200, {
       type: "file",
+      sha: "randomSha",
       content: Buffer.from(JSON.stringify(originalPackageJson)).toString(
         "base64"
       ),
@@ -133,6 +135,7 @@ test("replaces 'extends' entry if renovate.extends already existed", async () =>
     )
     .reply(200, {
       type: "file",
+      sha: "randomSha",
       content: Buffer.from(JSON.stringify(originalPackageJson)).toString(
         "base64"
       ),
@@ -179,6 +182,7 @@ test("returns if 'extends' entry contains exactly the same entry (even if it's i
     )
     .reply(200, {
       type: "file",
+      sha: "randomSha",
       content: Buffer.from(JSON.stringify(originalPackageJson)).toString(
         "base64"
       ),
@@ -219,6 +223,7 @@ test("throws if package.json is NOT a file", async () => {
       `/repos/${repository.owner.login}/${repository.name}/contents/package.json`
     )
     .reply(200, {
+      sha: "randomSha",
       type: "dir",
     });
 
@@ -228,7 +233,10 @@ test("throws if package.json is NOT a file", async () => {
     });
     unreachable("should have thrown");
   } catch (error) {
-    equal(error.message, "package.json should be a file not a dir");
+    equal(
+      error.message,
+      "[@octokit/plugin-create-or-update-text-file] https://api.github.com/repos/octocat/Hello-World/contents/package.json is not a file, but a dir"
+    );
   }
 });
 
