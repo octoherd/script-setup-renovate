@@ -1,11 +1,11 @@
 import { composeCreateOrUpdateTextFile } from "@octokit/plugin-create-or-update-text-file";
 
 /**
- * Setup renovate by adding `{"renovate": {"extends": "..."}}` to the package.json
+ * Setup renovate by adding `{"renovate": {"extends": "..."}}` to the JSON file
  *
  * @param {import('@octoherd/cli').Octokit} octokit
  * @param {import('@octoherd/cli').Repository} repository
- * @param { {extends: string} } options Custom user options passed to the CLI
+ * @param { {extends: string, path?: string} } options Custom user options passed to the CLI
  */
 export async function script(octokit, repository, options) {
   if (!options.extends) {
@@ -18,7 +18,7 @@ export async function script(octokit, repository, options) {
 
   const owner = repository.owner.login;
   const repo = repository.name;
-  const path = "package.json";
+  const path = options.path || "package.json";
 
   if (repository.archived) {
     octokit.log.info(
@@ -38,20 +38,18 @@ export async function script(octokit, repository, options) {
     repo,
     path,
     content: ({ exists, content }) => {
-      let pkg;
+      let jsonFile = !exists ? {} : JSON.parse(content);
 
-      if (!exists) {
-        pkg = {};
-      } else {
-        pkg = JSON.parse(content);
+      const isPackageJson = path.endsWith("package.json");
+
+      if (isPackageJson && !jsonFile.renovate) {
+        jsonFile.renovate = {};
       }
 
-      if (!pkg.renovate) {
-        pkg.renovate = {};
-      }
+      const renovateConfigObj = isPackageJson ? jsonFile.renovate : jsonFile;
 
       const newExtends = options.extends.split(/\s*,\s*/);
-      currentExtends = pkg.renovate.extends;
+      currentExtends = renovateConfigObj.extends;
 
       if (
         currentExtends &&
@@ -67,9 +65,9 @@ export async function script(octokit, repository, options) {
         return content;
       }
 
-      pkg.renovate.extends = newExtends;
+      renovateConfigObj.extends = newExtends;
 
-      return JSON.stringify(pkg);
+      return JSON.stringify(jsonFile);
     },
     message: "build: renovate setup",
   });
