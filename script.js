@@ -28,6 +28,14 @@ export async function script(octokit, repository, options) {
     return;
   }
 
+  if (repository.name === ".github") {
+    octokit.log.info(
+      { owner, repo, updated: false },
+      `${repository.name} is a blacklisted repository name. No changed applied.`
+    );
+    return;
+  }
+
   let currentExtends;
 
   const {
