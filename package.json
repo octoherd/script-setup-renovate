@@ -29,11 +29,6 @@
     "octoherd-script-setup-renovate": "./cli.js"
   },
   "repository": "github:octoherd/script-setup-renovate",
-  "renovate": {
-    "extends": [
-      "github>octoherd/.github"
-    ]
-  },
   "scripts": {
     "test": "uvu . **.test.js"
   }
