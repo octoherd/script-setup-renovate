@@ -438,6 +438,24 @@ test("returns if repository is archived", async () => {
   equal(nock.pendingMocks().length, 0);
 });
 
+test("returns if repository is named '.github'", async () => {
+  const dotGithubRepo = {
+    ...repository,
+    name: ".github",
+    full_name: "octocat/.github",
+  };
+
+  try {
+    await script(getOctokitForTests(), dotGithubRepo, {
+      extends: "github>octoherd/.github",
+    });
+  } catch (error) {
+    unreachable("should have NOT thrown");
+  }
+
+  equal(nock.pendingMocks().length, 0);
+});
+
 test("creates JSON file if file does NOT exist in the repository", async () => {
   const path = "renovate.json";
 
