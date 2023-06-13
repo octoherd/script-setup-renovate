@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@octoherd/cli": "^3.3.0",
-    "@octokit/plugin-create-or-update-text-file": "^2.0.2"
+    "@octokit/plugin-create-or-update-text-file": "^3.0.0"
   },
   "exports": "./index.js",
   "release": {
