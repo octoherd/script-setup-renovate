@@ -9,11 +9,11 @@
   "author": "Gregor Martynus (https://twitter.com/gr2m)",
   "license": "ISC",
   "devDependencies": {
-    "nock": "^13.2.9",
+    "nock": "^14.0.0-beta.5",
     "uvu": "^0.5.6"
   },
   "dependencies": {
-    "@octoherd/cli": "^3.3.0",
+    "@octoherd/cli": "^4.0.0",
     "@octokit/plugin-create-or-update-text-file": "^4.0.0"
   },
   "exports": "./index.js",
