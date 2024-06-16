@@ -17,11 +17,6 @@
     "@octokit/plugin-create-or-update-text-file": "^5.0.0"
   },
   "exports": "./index.js",
-  "release": {
-    "branches": [
-      "main"
-    ]
-  },
   "publishConfig": {
     "access": "public"
   },
