@@ -18,7 +18,8 @@
   },
   "exports": "./index.js",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "bin": {
     "octoherd-script-setup-renovate": "./cli.js"
